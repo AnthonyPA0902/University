@@ -1,0 +1,37 @@
+*******************Luồng Làm Việc***********************
+( XEM LUỒNG LÀM VIỆC VÀ NOTE ĐỂ TIẾN HÀNH LÀM )
+1. Người Dùng
++ Đầu tiên xem thông tin ở trang chủ để nắm rõ thông tin về phòng khám, dịch vụ cung cấp và bác sĩ. 
++ Người dùng xem các dịch vụ cung cấp, có thể tìm kiếm, dịch vụ được phân trang rõ ràng. Khi bấm vô dịch vụ sẽ đến được trang chi tiết dịch vụ với những thông tin chi tiết về dịch vụ đó. 
++ Khi xem chi tiết xong và thấy phù hợp muốn sử dụng dịch vụ thì bấm vào tiến hành đặt lịch hẹn. Nó sẽ đưa đến trang lịch hẹn có 1 cái form vói những thông tin như họ tên, email, sđt, dịch vụ được điền sẵn và sau đó người dùng chỉ cần chọn ngày hẹn và bác sĩ muốn hẹn là được.
++ Sau đó có 2 TH :
+	- TH1: Nếu người dùng chưa đăng nhập thì sẽ có thông báo người dùng cần có tài khoản và có điều hướng người dùng đến trang đăng nhập. Nếu người dùng chưa có tài khoản thì có thể qua trang đăng ký đế tạo. Người dùng cũng có thể đăng nhập bằng tài khoản Google
+	- TH2: Nếu người dùng dã có tài khoản thì sẽ có sẽ hiện lên 1 form xác nhận những thông tin. Nếu người dùng thấy đúng thì có thể bấm xác nhận để lịch hẹn được tạo. Và sau đó sẽ có thông báo tạo lịch hẹn thành công
++ Người dùng có thể vào phần hồ sơ người dùng để xem được thông tin về lịch hẹn hoặc thông tin về hồ sơ khám bệnh
+	- Ở phần thông tin lịch hẹn thì người dùng có thể xem các lịch hẹn trước đó của mình. Lịch hẹn sẽ được sắp xếp thêm thời gian tạo. Phần lịch hẹn có thể hiện trạng thái thanh toán của nó. Nếu nó chưa thanh toán thì người dùng có thể tiến hành thanh toán qua VnPay. Khi đã tiến hành thanh toán xong thì trạng thái của lịch hẹn sẽ được cập nhật.
+	- Ở phần hồ sơ khám bệnh thì người dùng có thể xem các hồ sơ của các lần khám bệnh trước của mình. Trong đó có ghi chi tiết thông tin đợt khám bệnh, thuốc được cấp và mỗi ngày uống bao nhiêu viên
+- Sau khi xong hết tất cả thì người dùng có thể đăng xuất tài khoản
+2. Bác Sĩ
++ Bác sĩ đăng nhập từ trang bảng điều khiển bằng tài khoản của mình.
++ Trong bảng điều khiển của bác sĩ thì sẽ có các trang : bảng điều khiển, bệnh nhân, ca khám, hồ sơ khám bệnh
+	+ Đối với trang bảng điều khiển thì bác sĩ xem thông tin cập nhật về các thông số của mình
+	+ Đối với bệnh nhân thì bác sĩ xem thông tin bệnh nhân , bao gồm các thông tin cá nhân và có thể click nó để xem lịch sử khám bệnh của bệnh nhân. Bao gồm ca khám và hồ sơ khám bệnh
+	+ Đối với ca khám thì bác sĩ sẽ check các lịch làm việc của mình. Nhấn vào nó để xem kỹ thông tin và có 2 nút hoàn thành và nút lập hồ sơ để đưa đến phần lập hồ sơ khám bệnh nơi các thông tin của ca khám đã được điền vào hồ sơ khám bệnh. Ca khám sẽ hiển thị màu khác nếu bác sĩ nhấn hoàn thành.
+	+ Đối với hồ sơ khám bệnh thì bác sĩ có thể bấm vào và xem các hồ sơ được tạo và tìm nó theo bệnh nhân bằng cách nhập tên
+3. Nhân Viên
++ Nhân viên đăng nhập từ trang bảng điều khiển bằng tài khoản của mình
++ Trong bảng điều khiển của nhân viên thì sẽ các trang : bảng điều khiển, bác sĩ, bệnh nhân, lịch hẹn khám, ca khám, hồ sơ khám bệnh, liệu trình, kho thuốc và thiết bị. 
+	+ Đối với trang bảng điều khiển thì nhân viên sẽ xem được thông số của trang web mình và biểu đồ thống kê dữ liệu từ trang web mình
+	+ Đối với bác sĩ thì nhân viên đó có thể xem, sửa, xóa thông tin của bác sĩ
+	+ Đối với bệnh nhân thì nhân viên có thể xem, sửa, thông tin của bệnh nhân. Xem lịch sử khám bệnh của bệnh nhân giống như tài khoản bác sĩ
+	+ Đối với lịch hẹn khám thì sẽ có 1 bảng thể hiện thông tin của lịch hẹn đó. Nếu lịch đó chưa được xếp thì sẽ có 1 nút thể hiện việc xếp lịch và 1 nút xóa lịch
+	+ Khi nhân viên bấm xếp lịch thì toàn bộ thông tin của lịch hẹn đó sẽ được xếp vô bảng tạo ca khám và nhân viên chỉ cần thêm thông tin về thời gian khám và phòng khám.
+	+ Khi ca khám được tạo thành công thì bác sĩ có thể check để xem thông tin lịch làm việc của mình. Nhân viên có thể xếp ca khám trực tiếp và thông tin của bệnh nhân đó sẽ được tự động lưu vào dữ liệu và sẽ có 1 tài khoản cho bệnh nhân đó để check
+	+ Đối với trang ca khám thì nhân viên có thể xem hết các ca khám của tất cả bác sĩ và có thể cập nhật trạng thái báo ca khám đã xong hay chưa
+	+ Đối với trang hồ sơ khám bệnh thì nhân viên có thể xem các hồ sơ khám bệnh của bệnh nhân
+	+ Đối với trang liệu trình, kho thuốc và thiết bị thì nhân viên có thể xem, sửa, xóa thông tin
+
+*** Note ***
++ Thuốc sẽ trừ khi bác sĩ thêm vào hồ sơ. 
++ Thêm chỗ để điền thông tin sử dụng thuốc ( Mỗi ngày X liều )
++ Liên kết giữa ca khám và hồ sơ khám bệnh

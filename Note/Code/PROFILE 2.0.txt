@@ -1,0 +1,194 @@
+import React, { useState, useEffect } from 'react';
+import styles from '../assets/css/profile.module.css';
+import Heading from '../components/Heading';
+import decodeToken from '../components/DecodeToken';
+import backgroundImage from '../assets/img/profile-background.jpg';
+import Swal from 'sweetalert2';
+
+const Profile = () => {
+    const [schedule, setSchedule] = useState([]);
+    const [activeSection, setActiveSection] = useState('schedule'); // State to manage active section
+    const [currentPage, setCurrentPage] = useState(1);  // New state for current page
+    const rowsPerPage = 5; // Number of rows to display per page
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            const decodedToken = decodeToken(token);
+            if (decodedToken) {
+                const customerId = decodedToken.user_id;
+                console.log(customerId);
+
+                fetch(`https://localhost:7157/api/profile/${customerId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data.schedules)
+                        if (Array.isArray(data.schedules)) {
+                            setSchedule(data.schedules);
+                        } else {
+                            setSchedule([]);
+                        }
+                    })
+                    .catch((error) => console.error("Error fetching schedule:", error));
+            }
+        }
+
+        // Check the 'payment' parameter from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentStatus = urlParams.get('payment'); // Get the 'payment' param
+
+        if (paymentStatus) {
+            // If payment is successful
+            if (paymentStatus === 'true') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful',
+                    text: 'Your payment has been successfully processed.',
+                    confirmButtonText: 'OK',
+                    timer: 5000, 
+                }).then(() => {
+                    window.history.pushState({}, '', window.location.pathname);
+                    window.location.reload(); // Refresh the page
+                });
+            }
+            // If payment failed
+            else if (paymentStatus === 'false') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Unsuccessful',
+                    text: 'There was an issue with processing your payment.',
+                    confirmButtonText: 'OK',
+                    timer: 5000, 
+                }).then(() => {
+                    window.history.pushState({}, '', window.location.pathname);
+                    window.location.reload(); // Refresh the page
+                });
+            }
+        }
+    }, []);
+
+    const handleSubmit = (scheduleId, price) => {
+        fetch(`https://localhost:7157/api/profile/vnpay/${scheduleId}/${price}`)
+            .then((response) => response.text())
+            .then((paymentUrl) => {
+                window.location.href = paymentUrl;
+            })
+            .catch((error) => {
+                console.error("Error redirecting to VnPay:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment failed',
+                    text: 'Could not proceed to payment. Please try again later.'
+                });
+            });
+    };
+
+    // Handle button clicks to show specific sections
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+    };
+
+    // Pagination logic
+    const indexOfLastRow = currentPage * rowsPerPage;
+    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+    const currentRows = schedule.slice(indexOfFirstRow, indexOfLastRow);
+    const totalPages = Math.ceil(schedule.length / rowsPerPage);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    return (
+        <main className={styles.main} style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}>
+            {/* Header Section */}
+            <Heading title="HỒ SƠ KHÁCH HÀNG" />
+
+            {/* Button to toggle between sections */}
+            <div className={styles.buttonContainer}>
+                <button 
+                    className={styles.toggleButton} 
+                    onClick={() => handleSectionChange('schedule')}
+                >
+                    Xem Lịch Hẹn
+                </button>
+                <button 
+                    className={styles.toggleButton} 
+                    onClick={() => handleSectionChange('profile')}
+                >
+                    Xem Hồ Sơ Khám Bệnh
+                </button>
+            </div>
+
+            {/* Conditional Rendering for the Content */}
+            {activeSection === 'schedule' && (
+                <div className={styles.scheduleContent}>
+                    <table className={styles.profileTable}>
+                        <thead>
+                            <tr>
+                                <th>STT Lịch Hẹn</th>
+                                <th>Ngày hẹn</th>
+                                <th>Bác sĩ khám</th>
+                                <th>Dịch vụ khám</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Array.isArray(currentRows) && currentRows.map((schedule, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1 + indexOfFirstRow}</td>
+                                    <td>{schedule.date}</td>
+                                    <td>{schedule.doctorName}</td>
+                                    <td>{schedule.treatmentName}</td>
+                                    <td>{schedule.price}</td>
+                                    <td>{schedule.status}</td>
+                                    <td>
+                                        {schedule.status === "Chưa Thanh Toán" ? (
+                                            <button
+                                                className={styles.paymentButton}
+                                                onClick={() => handleSubmit(schedule.id, schedule.price)} 
+                                            >
+                                                Thanh Toán
+                                            </button>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Pagination Controls */}
+                    <div className={styles.pagination}>
+                        <button 
+                            onClick={() => handlePageChange(currentPage - 1)} 
+                            disabled={currentPage === 1}
+                        >
+                            Prev
+                        </button>
+                        <span>Page {currentPage} of {totalPages}</span>
+                        <button 
+                            onClick={() => handlePageChange(currentPage + 1)} 
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {activeSection === 'record' && (
+                <div className={styles.profileContent}>
+                    {/* You can leave this section blank for now */}
+                    <p>Hồ Sơ Khám Bệnh content will be here.</p>
+                </div>
+            )}
+        </main>
+    );
+};
+
+export default Profile;

@@ -1,0 +1,51 @@
+    function getQueryParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const regex = /([^&=]+)=([^&]*)/g;
+        let m;
+
+        while ((m = regex.exec(queryString))) {
+            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
+        return params;
+    }
+
+    window.onload = function () {
+        const params = getQueryParams();
+
+        if (params.payment === 'true') {
+            fetch(`https://localhost:7157/api/appointment/schedule/${cusName}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to update appointment");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Appointment updated:", data);
+            
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        } else if (params.paymet === 'false') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Failed',
+            });
+        }
+    };

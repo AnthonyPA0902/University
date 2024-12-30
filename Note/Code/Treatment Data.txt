@@ -1,0 +1,277 @@
+Treatment Data : 
+import React, { useState, useEffect } from 'react';
+import '../../admin_assets/css/schedule.css';
+import TreatmentModal from '../../components/TreatmentModal';
+import Swal from 'sweetalert2';
+
+// Treatment Component
+const Treatment = () => {
+    const [treatment, setTreatment] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingTreatment, setEditingTreatment] = useState(null);
+
+    useEffect(() => {
+        fetch("https://localhost:7157/api/admin/treatment")
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                if (Array.isArray(data.treatments)) {
+                    setTreatment(data.treatments);
+                } else {
+                    setTreatment([]);
+                }
+            })
+            .catch((error) => console.error("Error fetching treatments:", error));
+    }, []);
+
+    const handleAddTreatment = (treatmentData) => {
+        console.log("Submitting treatment data:", treatmentData);
+
+        const payload = {
+            name: treatmentData.name,
+            session: treatmentData.session,
+            price: treatmentData.price,
+            image: treatmentData.image,
+        };
+
+        if (editingTreatment) {
+            fetch(`https://localhost:7157/api/admin/treatment/${editingTreatment.id}`, {
+                method: "PUT",
+                headers: { 
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => response.json())
+                .then(() => refetchTreatmentData())
+                .catch((error) => console.error("Error editing treatment:", error));
+        } else {
+            fetch("https://localhost:7157/api/admin/treatment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => response.json())
+                .then(() => refetchTreatmentData()) 
+                .catch((error) => console.error("Error updating treatment:", error));
+        }
+        setIsModalOpen(false);
+    };
+
+    const refetchTreatmentData = () => {
+        fetch("https://localhost:7157/api/admin/treatment")
+        .then((response) => response.json())
+        .then((updatedData) => {
+            if (Array.isArray(updatedData.treatments)) {
+                setTreatment(updatedData.treatments);
+            }
+        })
+        .catch((error) => console.error("Error fetching updated treatment:", error));
+    };
+
+    const handleCreateClick = () => {
+        setEditingTreatment(null);
+        setIsModalOpen(true); 
+    };
+
+    const handleEditClick = (id) => {
+        fetch(`https://localhost:7157/api/admin/treatment/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setEditingTreatment(data.treatment); 
+                setIsModalOpen(true); 
+            })
+            .catch((error) => console.error("Error fetching treatment:", error));
+    };
+
+    const handleDeleteClick = (treatmentId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to delete this treatment?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`https://localhost:7157/api/admin/treatment/${treatmentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Treatment has been deleted.',
+                            'success'
+                        );
+                        refetchTreatmentData();
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem deleting the treatment.',
+                        'error'
+                    );
+                    console.error('Error deleting treatment:', error);
+                });
+            }
+        });
+    };
+
+
+    return (
+        <div className="content">
+            <div className="treatment-container">
+                <h1>Danh sách liệu trình</h1>
+                <button className="register-button" onClick={() => handleCreateClick()}>
+                    Thêm liệu trình mới
+                </button>
+                <br />
+                <br />
+                <input type="text" placeholder="Tìm kiếm theo tên liệu trình" className="search-bar" />
+                <table className="treatment-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên Liệu Trình</th>
+                            <th>Số Buổi</th>
+                            <th>Giá Tiền</th>
+                            <th>Hình Ảnh</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Array.isArray(treatment) && treatment.map((treatment, index) => (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{treatment.name}</td>
+                                <td>{treatment.session}</td>
+                                <td>{treatment.price}</td>
+                                <td>{treatment.image}</td>
+                                <td style={{ textAlign: 'center' }}><button onClick={() => handleEditClick(treatment.id)}><img className="icon" src="/admin_assets/img/icon/edit-icon.png" alt="edit-icon" /></button>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<button onClick={() => handleDeleteClick(treatment.id)}><img className="icon" src="/admin_assets/img/icon/delete-icon.png" alt="edit-icon" /></button></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <TreatmentModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleAddTreatment}
+                    editingTreatment={editingTreatment}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default Treatment;
+
+MODALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+
+import React, { useState, useEffect } from "react";
+import '../admin_assets/css/modal.css';
+
+const TreatmentModal = ({ isOpen, onClose, onSubmit, editingTreatment }) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        session: '',
+        price: '',
+        image: null, // Initialize as null for file uploads
+    });
+
+    useEffect(() => {
+        if (editingTreatment) {
+            setFormData({
+                name: editingTreatment.name || '',
+                session: editingTreatment.session || '',
+                price: editingTreatment.price || '',
+                image: editingTreatment.image || null,
+            });
+        } else {
+            setFormData({
+                name: '',
+                session: '',
+                price: '',
+                image: null,
+            });
+        }
+    }, [editingTreatment]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'image') {
+            setFormData({
+                ...formData,
+                image: e.target.files[0], // Set the file object directly for images
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(formData); // Pass the form data, including the file
+        onClose();
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="modal-overlay">
+            <div className="popup-modal">
+                <h2>{editingTreatment ? 'Chỉnh sửa thông tin liệu trình' : 'Tạo liệu trình'}</h2>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Tên liệu trình"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="session"
+                        value={formData.session}
+                        onChange={handleInputChange}
+                        placeholder="Số buổi"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        placeholder="Giá tiền"
+                        required
+                    />
+                    <input
+                        type="file"
+                        name="image"
+                        onChange={handleInputChange}
+                        required
+                    />
+                    <div className="button-container">
+                        <button type="submit" className="submit-button">{editingTreatment ? 'Lưu' : 'Thêm'}</button>
+                        <button type="button" onClick={onClose} className="close-button">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default TreatmentModal;

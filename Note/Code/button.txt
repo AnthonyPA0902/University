@@ -1,0 +1,3 @@
+                <button className="register-button" onClick={() => handleCreateClick()}>
+                    Thêm thiết bị mới
+                </button>

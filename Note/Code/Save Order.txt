@@ -1,0 +1,24 @@
+  const currentDate = new Date();
+                        const formattedDate = currentDate.getFullYear() + '-' +
+                            String(currentDate.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(currentDate.getDate()).padStart(2, '0');
+
+                        const orderData = {
+                            customerName: name,
+                            customerEmail: email,
+                            total: fetchedPrice,
+                            date: formattedDate,
+                            method: 'VnPay',
+                            status: 'Đã Thanh Toán',
+                            treatmentId: formData.treatmentId
+                        };
+                        console.log(orderData);
+
+                        fetch('https://localhost:7157/api/appointment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(orderData)
+                        });
+

@@ -1,0 +1,3 @@
+1. Nên đặt tên là xây dựng hệ thống thay vì website vì cơ bản đây là một hệ thống trên web. Tương đương với một ứng dụng
+2. Có rất nhiều phần mềm quản lý phòng khám , quản lý nhà thuốc được sản xuất và bán rộng rãi. Nên suy nghĩ lại hướng phát triển và bán sản phẩm
+3. Nên thử suy nghĩ sang các hướng làm website y tế hay hệ thống khác

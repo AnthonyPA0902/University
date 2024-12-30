@@ -1,0 +1,96 @@
+- Có 6 đối tượng truy cập và sử dụng website :
++ Lễ Tân
++ Thu Ngân
++ Bác Sĩ
++ Nhân Viên Bán Thuốc
++ Admin
++ Khách Hàng
+=> Các đối tượng này sẽ được chia làm 2 thực thể và tương đương với bảng USER và bảng ROLES
+
+CÁC THỰC THỂ
+1. USER (NGƯỜI DÙNG)
+2. ROLE (VAI TRÒ)
+3. CHECKUP  (CA KHÁM)
+4. EXAMINATION SCHEDULE (LỊCH HẸN KHÁM)
+5. TREATMENT (LIỆU TRÌNH)
+6. PAYMENT (THANH TOÁN)
+7. MEDICAL RECORD (HỒ SƠ BỆNH ÁN)
+8. ORDER (HÓA ĐƠN)
+9. MEDICINE STORAGE (KHO THUỐC)
+10. EQUIPMENT (TRANG THIẾT BỊ)
+11. PRICE LIST ( BẢNG GIÁ)
+
+
+CÁC THUỘC TÍNH
+1. USER
+- id
+- name
+- age
+- address
+- phone
+- email
+- username
+- password
+- roleId
+
+2. ROLE
+- id
+- roleType
+
+3. CHECKUP
+- id
+- time
+- customerId
+- doctorId
+
+4. EXAMINATION SCHEDULE
+- id
+- time
+- form
+- customerId
+
+5. TREATMENT
+- id
+- typeOfTreatment
+- session
+- priceId
+
+6. PAYMENT
+- id
+- name
+- total
+- date
+- method
+- orderId
+- customerId
+
+7. ORDER
+- id
+- description
+- typeOfOrder
+
+8. MEDICAL RECORD
+- id
+- description
+- customerId
+- doctorId
+
+9. EQUIPEMENT
+- id
+- typeOfEquipement
+- cleaningCycle
+- maintenance
+
+10. MEDICINE STORAGE
+- id
+- name
+- typeOfMedicine
+- quantity
+- importDate
+- priceId
+
+11. PRICE LIST
+- id
+- name
+- price
+- updateDate

@@ -1,0 +1,5 @@
+[1] Tất cả những gì bạn cần biết về ASP.NET Core? Website: https//https://www.tma.vn/Hoi-dap/Cam-nang-nghe-nghiep/Tat-ca-nhung-gi-ban-can-biet-ve-ASP-NET-Core/41324. Truy cập: 14/09/2024
+[2] 8 lý do hàng đầu ASP.NET Core là Framework tốt nhất để phát triển ứng dụng web. Website: https://t3h.com.vn/tin-tuc/8-ly-do-hang-dau-aspnet-core-la-framework-tot-nhat-de-phat-trien-ung-dung-web. Truy cập: 15/09/2024
+[3] Web API Là Gì? Ứng Dụng Của Web API Trong Thiết Kế Web. Website: https://stringee.com/vi/blog/post/web-api-la-gi. Truy cập: 18/09/2024
+[4] ReactJS là gì? Tất tần tật những điều căn bản về ReactJS. Website: https://stringee.com/vi/blog/post/reactJS-la-gi. Truy cập: 21/09/2024
+[5] Định nghĩa về SQL Server và mục đích về việc sử dụng SQL Server?. Website: https://tenten.vn/tin-tuc/sql-server/. Truy cập: 22/09/2024

@@ -1,0 +1,48 @@
+Chủ Đề : Xây Dựng Website Quản Lý Phòng Khám Bệnh Tư Nhân
+-> Có 2 phần chính
++ Phần User ( Đảm Nhiệm Vấn Đề Đặt Lịch Hẹn Online và Truyền Thông Marketing)    + Phần Admin
+Các thông tin tìm được về phòng khám tư nhân :
++ Có 2 hình thức khám online và khám trực tiếp
++ Các gói dịch vụ cung cấp : Kiểm tra sức khỏe định kỳ, khám chuyên khoa cho, khám tổng quát, khám ngoại và khám nội, chẩn đoán xét nghiệm, chích ngừa,...
++ Các vị trí có thể trong phòng khám : bảo vệ, lễ tân, thu ngân, bác sĩ, y tá, điều dưỡng, vệ sinh,...
++ Các quy trình phòng khám : Đặt lịch hẹn khám, Phân loại khách hàng : khách hàng mới, khách hàng thân thiết, Quản lý hồ sơ
+giấy tờ, quản lý thuốc, quản lý tài chính, báo cáo thống kế, Bệnh án điện tử, form chẩn đoán tình trạng bệnh lý, quản lý đơn thuốc, quản lý trang thiết bị
++ Thực hiện kết nối liên thông dữ liệu giữa phòng khám với BHXH thông qua mạng internet
+
+
+CÁC CHỨC NĂNG SẼ LÀM :
+-> LỄ TÂN
++ ĐĂNG KÝ CA KHÁM ( Xong ) 
++ QUẢN LÝ LỊCH HẸN KHÁM 
++ QUẢN LÝ KHÁCH HÀNG ( Để suy xét )
++ ĐĂNG KÝ LIỆU TRÌNH
+
+-> THU NGÂN
++ QUẢN LÝ THANH TOÁN
+
+-> BÁC SĨ
++ QUẢN LÝ CA KHÁM ( DANH SÁCH CA KHÁM VÀ DANH SÁCH LIỆU TRÌNH)
++ QUẢN LÝ HỒ SƠ BỆNH ÁN (BỆNH ÁN ĐIỆN TỬ)
+
+-> NHÂN VIÊN BÁN THUỐC
++ TẠO ĐƠN BÁN HÀNG
++ QUẢN LÝ HÓA ĐƠN
++ QUẢN LÝ KHO THUỐC
++ QUẢN LÝ BÁO CÁO
+
+-> ADMIN (CHỦ PHÒNG KHÁM)
++ QUẢN LÝ CA KHÁM
++ QUẢN LÝ KHÁCH HÀNG
++ QUẢN LÝ BẢNG GIÁ
++ QUẢN LÝ KHO THUỐC
++ QUẢN LÝ TRANG THIẾT BỊ ( LÀM )
++ QUẢN LÝ BÁO CÁO
++ QUẢN LÝ NHÂN LỰC ( Xong cho bác sĩ) 
+
+-> KHÁCH HÀNG
++ ĐẶT LỊCH HẸN KHÁM ONLINE ( Xong )
++ ĐĂNG NHẬP QUA GOOGLE
++ NHẬN MAIL THÔNG BÁO ĐẶT THÀNH CÔNG
+
+
+

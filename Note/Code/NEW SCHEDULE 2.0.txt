@@ -1,0 +1,181 @@
+import React, { useState, useEffect } from 'react';
+import '../../admin_assets/css/schedule.css';
+import ScheduleModal from '../../components/ScheduleModal';
+import { useNavigate } from 'react-router-dom';
+
+const Schedule = () => {
+    const [schedule, setSchedule] = useState([]); // Schedule data state
+    const [isModalOpen, setIsModalOpen] = useState(false); // Modal open state
+    const [editingSchedule, setEditingSchedule] = useState(null); // For editing a schedule
+    const [searchTerm, setSearchTerm] = useState(""); // For search input
+    const [currentPage, setCurrentPage] = useState(1); // For current page
+    const [totalRecords, setTotalRecords] = useState(0); // Total records for pagination
+    const [pageSize] = useState(5); // Page size for pagination (Fixed size)
+    const navigate = useNavigate(); // For navigation
+
+    useEffect(() => {
+        // Fetch schedule data with pagination and search term
+        refetchScheduleData(searchTerm, currentPage, pageSize);
+    }, [currentPage, pageSize, searchTerm]); // Include searchTerm in the dependencies array
+
+    const refetchScheduleData = (search = "", page = 1, pageSize = 5) => {
+        fetch(`https://localhost:7157/api/admin/schedule?search=${encodeURIComponent(search)}&page=${page}&pageSize=${pageSize}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    setSchedule(data.schedules);
+                    setTotalRecords(data.totalRecords);
+                }
+            })
+            .catch((error) => console.error("Error fetching updated schedule:", error));
+    };
+
+    const handleCheckupClick = (scheduleData) => {
+        navigate('/admin/checkup', { state: { scheduleData } });
+    };
+
+    const handleAddSchedule = (scheduleData) => {
+        const payload = {
+            name: scheduleData.name,
+            phone: scheduleData.phone,
+            email: scheduleData.email,
+            date: scheduleData.date,
+            doctorId: parseInt(scheduleData.doctorId),
+            treatmentId: parseInt(scheduleData.treatmentId),
+        };
+
+        if (editingSchedule) {
+            fetch(`https://localhost:7157/api/admin/schedule/${editingSchedule.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            })
+                .then(() => refetchScheduleData(searchTerm, currentPage, pageSize))
+                .catch((error) => console.error("Error editing schedule:", error));
+        } else {
+            fetch("https://localhost:7157/api/admin/schedule", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            })
+                .then(() => refetchScheduleData(searchTerm, currentPage, pageSize))
+                .catch((error) => console.error("Error adding schedule:", error));
+        }
+        setIsModalOpen(false);
+    };
+
+    const handleSearch = () => {
+        refetchScheduleData(searchTerm, currentPage, pageSize); // Fetch data based on search term
+    };
+
+    const handleCreateClick = () => {
+        setEditingSchedule(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEditClick = (id) => {
+        fetch(`https://localhost:7157/api/admin/schedule/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setEditingSchedule(data.schedule);
+                setIsModalOpen(true);
+            })
+            .catch((error) => console.error("Error fetching schedule:", error));
+    };
+
+    const handlePaginationClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const totalPages = Math.ceil(totalRecords / pageSize); // Total number of pages
+
+    return (
+        <div className="content">
+            <div className="schedule-container">
+                <h1>Danh sách lịch hẹn khám</h1>
+                <button className="register-button" onClick={() => handleCreateClick()}>
+                    Tạo lịch hẹn khám mới
+                </button>
+                <br />
+                <br />
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm theo tên bác sĩ"
+                    className="search-bar"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button onClick={handleSearch} className="search-button">
+                    <img src="/admin_assets/img/search-icon.png" alt="Search" className="search-icon" />
+                </button>
+                <table className="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th>Ngày hẹn</th>
+                            <th>Bác sĩ khám</th>
+                            <th>Dịch vụ khám</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Array.isArray(schedule) && schedule.map((schedule, index) => (
+                            <tr key={index}>
+                                <td>{(currentPage - 1) * pageSize + index + 1}</td> {/* Adjust for pagination */}
+                                <td>{schedule.name}</td>
+                                <td>{schedule.phone}</td>
+                                <td>{schedule.email}</td>
+                                <td>{schedule.date}</td>
+                                <td>{schedule.doctorName}</td>
+                                <td>{schedule.treatmentName}</td>
+                                <td style={{ textAlign: 'center' }}>
+                                    <button onClick={() => handleEditClick(schedule.id)}>
+                                        <img className="icon" src="/admin_assets/img/icon/edit-icon.png" alt="edit-icon" />
+                                    </button>
+                                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                                    {schedule.condition === "Chưa Xếp Lịch" && (
+                                        <button onClick={() => handleCheckupClick(schedule)}>
+                                            <img className="icon" src="/admin_assets/img/icon/checkup-icon.png" alt="checkup-icon" />
+                                        </button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="pagination">
+                    <button onClick={() => handlePaginationClick(currentPage - 1)} disabled={currentPage === 1}>
+                        Previous
+                    </button>
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handlePaginationClick(index + 1)}
+                            className={index + 1 === currentPage ? "active" : ""}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button onClick={() => handlePaginationClick(currentPage + 1)} disabled={currentPage === totalPages}>
+                        Next
+                    </button>
+                </div>
+                <ScheduleModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleAddSchedule}
+                    editingSchedule={editingSchedule}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default Schedule;

@@ -1,0 +1,10 @@
+   const token = sessionStorage.getItem("token");
+        if (token) {
+            const decodedToken = decodeToken(token);
+            if (decodedToken) {
+                setName(decodedToken.user_name);
+                setEmail(decodedToken.user_email);
+            }
+        }
+
+import decodeToken from '../components/DecodeToken';

@@ -1,0 +1,13 @@
+ fetch(`https://localhost:7157/api/appointment/vnpay/${formData.treatmentId}`)
+                            .then((response) => response.text())
+                            .then((paymentUrl) => {
+                                window.location.href = paymentUrl;
+                            })
+                            .catch((error) => {
+                                console.error("Error redirecting to VnPay:", error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Payment failed',
+                                    text: 'Could not proceed to payment. Please try again later.'
+                                });
+                            });

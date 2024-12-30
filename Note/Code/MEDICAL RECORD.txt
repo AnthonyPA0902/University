@@ -1,0 +1,194 @@
+import React, { useEffect, useState } from 'react';
+import '../../admin_assets/css/medicalrecord.css';
+import RecordModal from '../../components/RecordModal';
+
+const MedicalRecord = () => {
+    // State to hold all records and the selected record's details
+    const [records, setRecords] = useState([]);
+    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // State to hold selected filters for name and date
+    const [selectedName, setSelectedName] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
+
+    // Fetch records on component mount
+    useEffect(() => {
+        const fetchRecords = async () => {
+            try {
+                const response = await fetch('https://localhost:7157/api/admin/record');
+                const data = await response.json();
+
+                if (data.success) {
+                    setRecords(data.records);
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching records:', error);
+            }
+        };
+
+        fetchRecords();
+    }, []);
+
+    // Function to get unique names
+    const getUniqueNames = (records) => {
+        // Create a Set from the customerName values, ensuring uniqueness
+        const uniqueNames = new Set(records.map(record => record.customerName));
+
+        // Convert the Set back to an array and return
+        return Array.from(uniqueNames);
+    };
+
+    // Function to get unique dates
+    const getUniqueDates = (records) => {
+        // Format the date to string to ensure it’s in the same format (e.g., "MM/DD/YYYY")
+        const uniqueDates = new Set(records.map(record => new Date(record.recordDate).toLocaleDateString()));
+
+        // Convert the Set back to an array and return
+        return Array.from(uniqueDates);
+    };
+
+
+    // Handle record selection from the main dropdown
+    const handleRecordSelect = (event) => {
+        const recordId = event.target.value;
+        const record = records.find((r) => r.id === parseInt(recordId));
+        setSelectedRecord(record);
+    };
+
+    const handleUpdateRecord = (updatedRecord) => {
+        // Update the records list (or handle the result as needed)
+        const updatedRecords = records.map(record =>
+            record.id === updatedRecord.id ? updatedRecord : record
+        );
+        setRecords(updatedRecords); // Update the records state
+        setIsModalOpen(false); // Close the modal after submitting
+    };
+
+    // Filter records based on selected name and date
+    const filteredRecords = records.filter(record => {
+        const nameMatch = selectedName ? record.customerName.includes(selectedName) : true;
+
+        // Extract the date part for comparison (no time)
+        const recordDate = new Date(record.recordDate).toLocaleDateString();
+        const dateMatch = selectedDate ? recordDate === selectedDate : true;
+
+        return nameMatch && dateMatch;
+    });
+
+    // Get unique names and dates from records
+    const uniqueNames = getUniqueNames(records);
+    const uniqueDates = getUniqueDates(records);
+
+    // Ensure the selected record is in the filtered list
+    useEffect(() => {
+        // If the selected record is not in the filtered list, reset it
+        if (selectedRecord && !filteredRecords.some(record => record.id === selectedRecord.id)) {
+            setSelectedRecord(null);
+        }
+    }, [selectedName, selectedDate, filteredRecords, selectedRecord]); // Run the effect whenever filters change
+
+    // Open the modal when the button is clicked
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    return (
+        <div className="content">
+            <h1>Hồ Sơ Khám Bệnh</h1>
+            {/* Button to open the modal */}
+            <div className="modal-open-button">
+                <button className="record-button" onClick={handleOpenModal}>Tạo Hồ Sơ</button>
+            </div>
+            <br />
+            {/* Left: Dropdowns to select by name or date */}
+            <div className="filter-container">
+                <div className="dropdown-container">
+                    <label htmlFor="nameDropdown">Theo Tên Hồ Sơ:</label>
+                    <select
+                        className="record-select"
+                        id="nameDropdown"
+                        onChange={(e) => setSelectedName(e.target.value)}
+                        value={selectedName}
+                    >
+                        <option value="">Tất Cả</option>
+                        {uniqueNames.map((name, index) => (
+                            <option key={index} value={name}>
+                                {name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="dropdown-container">
+                    <label htmlFor="dateDropdown">Theo Ngày :</label>
+                    <select
+                        className="record-select"
+                        id="dateDropdown"
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        value={selectedDate}
+                    >
+                        <option value="">Tất Cả</option>
+                        {uniqueDates.map((date, index) => (
+                            <option key={index} value={date}>
+                                {date}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            <div className="record-container">
+                {/* Main Dropdown: Select a record */}
+                <div className="dropdown-container">
+                    <label htmlFor="recordDropdown">Vui Lòng Chọn Hồ Sơ:</label>
+                    <select
+                        className="record-select"
+                        id="recordDropdown"
+                        onChange={handleRecordSelect}
+                        value={selectedRecord ? selectedRecord.id : ''}
+                    >
+                        <option value="" disabled></option>
+                        {filteredRecords.map((record) => (
+                            <option key={record.id} value={record.id}>
+                                {record.customerName} - {new Date(record.recordDate).toLocaleDateString()}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Right: View for record details */}
+                <div className="record-details-container">
+                    {selectedRecord ? (
+                        <div className="record-details">
+                            <h2><i>Chi Tiết Hồ Sơ</i></h2>
+                            <p><strong>Tên Khách Hàng:</strong> {selectedRecord.customerName}</p>
+                            <p><strong>Ngày Lập Hồ Sơ:</strong> {new Date(selectedRecord.recordDate).toLocaleDateString()}</p>
+                            {/* Add other fields from the record as needed */}
+                            <p><strong>Thông Tin Chi Tiết:</strong> {selectedRecord.description}</p>
+                            {/* Display Medicines List (Toa Thuoc) */}
+                            <p><strong>Toa Thuốc:</strong></p>
+                            <ul>
+                                {selectedRecord.medicines.map(medicine => (
+                                    <li key={medicine.medicineId}>
+                                        {medicine.medicineName} - Số lượng: {medicine.quantity}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <p>Hãy Chọn Một Hồ Sơ Để Xem Thông Tin.</p>
+                    )}
+                </div>
+            </div>
+            {/* Modal for viewing or editing a selected record */}
+            <RecordModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSubmit={handleUpdateRecord}
+            />
+        </div>
+    );
+};
+
+export default MedicalRecord;

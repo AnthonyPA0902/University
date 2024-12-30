@@ -1,0 +1,65 @@
+Service Data
+
+import React from 'react';
+import styles from '../assets/css/service.module.css';
+import Heading from '../components/Heading';
+import backgroundImage from '../assets/img/service-background.jpg';
+
+const Service = () => {
+    return (
+        <main className={styles.main} style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}>
+            {/* Header Section */}
+           <Heading title="DỊCH VỤ CUNG CẤP"/>
+
+            {/* Services Section */}
+            <div id="services" className={`${styles.services}`}>
+                <a href="/appointment"><div className={styles.serviceBox}>
+                    <div className={styles.serviceImage}>
+                        <img src="/assets/img/clinic_services/general-check-up.jpg" alt="service pic" />
+                    </div>
+                    <div className={styles.serviceContent}>
+                        <ul>
+                            <li>Liệu Trình: <span className={`${styles.bold}`}>3 buổi/tuần</span></li>
+                            <li>Số tiền: <span className={`${styles.bold}`}>2.000.000 đồng</span></li>
+                        </ul>
+                    </div>
+                </div></a>
+                <a href="/appointment"><div className={styles.serviceBox}>
+                    <div className={styles.serviceImage}>
+                        <img src="/assets/img/clinic_services/medicine.jpg" alt="service pic" />
+                    </div>
+                    <div className={styles.serviceContent}>
+                        <ul>
+                            <li>Liệu Trình: <span className={`${styles.bold}`}>Bất cứ khi nào</span></li>
+                            <li>Số tiền: <span className={`${styles.bold}`}>500.000 đồng</span></li>
+                        </ul>
+                    </div>
+                </div></a>
+                <a href="/appointment"><div className={styles.serviceBox}>
+                    <div className={styles.serviceImage}>
+                        <img src="/assets/img/clinic_services/medical-shot.jpg" alt="service pic" />
+                    </div>
+                    <div className={styles.serviceContent}>
+                        <ul>
+                            <li>Liệu Trình: <span className={`${styles.bold}`}>2 buổi/tuần</span></li>
+                            <li>Số tiền: <span className={`${styles.bold}`}>2.000.000 đồng</span></li>
+                        </ul>
+                    </div>
+                </div></a>
+                <a href="/appointment"><div className={styles.serviceBox}>
+                    <div className={styles.serviceImage}>
+                        <img src="/assets/img/clinic_services/examination.jpg" alt="service pic" />
+                    </div>
+                    <div className={styles.serviceContent}>
+                        <ul>
+                            <li>Liệu Trình: <span className={`${styles.bold}`}>1 buổi/tháng</span></li>
+                            <li>Số tiền: <span className={`${styles.bold}`}>5.000.000 đồng</span></li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+        </main>
+    );
+};
+
+export default Service;

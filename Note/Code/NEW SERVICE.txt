@@ -1,0 +1,80 @@
+import React, { useState, useEffect } from 'react';
+import styles from '../assets/css/service.module.css';
+import Heading from '../components/Heading';
+import backgroundImage from '../assets/img/service-background.jpg';
+
+const Service = () => {
+    const [treatments, setTreatments] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+        const fetchTreatments = async () => {
+            try {
+                const response = await fetch(`https://localhost:7157/api/service?pageNumber=${currentPage}&pageSize=3`);
+                const data = await response.json();
+
+                // Log the data to check if image exists
+                console.log('Fetched treatments:', data);
+
+                if (response.ok) {
+                    setTreatments(data.treatments);
+                    setTotalPages(data.totalPages);
+                } else {
+                    console.error('Error fetching treatments:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching treatments:', error);
+            }
+        };
+
+        fetchTreatments();
+    }, [currentPage]);
+
+    const handlePagination = (page) => {
+        if (page < 1 || page > totalPages) return; // Prevent out of bounds pagination
+        setCurrentPage(page);
+    };
+
+    return (
+        <main className={styles.main} style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover' }}>
+            <Heading title="DỊCH VỤ CUNG CẤP" />
+
+            <div id="services" className={`${styles.services}`}>
+                {treatments.map((treatment, index) => (
+                    <a href="/appointment" key={index}>
+                        <div className={styles.serviceBox}>
+                            <div className={styles.serviceImage}>
+                                {treatment.image ? (
+                                    // Check if Image exists and then display
+                                    <img
+                                        src={`data:image/jpeg;base64,${treatment.image}`} // Set the image source as base64 string
+                                        alt={`service-${treatment.id}`}
+                                    />
+                                ) : (
+                                    <p>No Image Available</p> // Placeholder for treatments without image
+                                )}
+                            </div>
+                            <div className={styles.serviceContent}>
+                                <ul>
+                                    <li>Liệu Trình: <span className={`${styles.bold}`}>{treatment.name}</span></li>
+                                    <li>Số Buổi: <span className={`${styles.bold}`}>{treatment.session}</span></li>
+                                    <li>Số tiền: <span className={`${styles.bold}`}>{(treatment.price).toLocaleString('en-US')}</span> đồng</li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+
+            {/* Pagination */}
+            <div className={styles.pagination}>
+                <button onClick={() => handlePagination(currentPage - 1)} disabled={currentPage <= 1}>Prev</button>
+                <span>{currentPage} / {totalPages}</span>
+                <button onClick={() => handlePagination(currentPage + 1)} disabled={currentPage >= totalPages}>Next</button>
+            </div>
+        </main>
+    );
+};
+
+export default Service;
